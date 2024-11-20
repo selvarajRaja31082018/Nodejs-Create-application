@@ -1,0 +1,103 @@
+<div class="auth-main">
+  <div class="auth-wrapper v3">
+    <div class="auth-form">
+      <div class="auth-header">
+        <a href="javascript:"><img src="assets/images/logo-dark.svg" alt="logo" /></a>
+      </div>
+      <form class="form-group" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="card my-5">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+              <h3 class="mb-0"><b>Login</b></h3>
+              <a [routerLink]="['/register']" class="link-primary">Don't have an account?</a>
+            </div>
+
+            <!-- Email Input with Error Handling -->
+            <div class="form-group mb-3">
+              <label class="form-label" for="email">Email Address</label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                id="email"
+                placeholder="Email Address"
+              />
+              <!-- Display Email Errors -->
+              <div *ngIf="loginForm.controls['email'].invalid && (loginForm.controls['email'].touched || loginForm.controls['email'].dirty)">
+                <small class="text-danger" *ngIf="loginForm.controls['email'].errors?.['required']">
+                  Email is required.
+                </small>
+                <small class="text-danger" *ngIf="loginForm.controls['email'].errors?.['email']">
+                  Invalid email format.
+                </small>
+              </div>
+            </div>
+
+            <!-- Password Input with Error Handling -->
+            <div class="form-group mb-3">
+              <label class="form-label" for="password">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password"
+                id="password"
+                placeholder="Password"
+              />
+              <!-- Display Password Errors -->
+              <div *ngIf="loginForm.controls['password'].invalid && (loginForm.controls['password'].touched || loginForm.controls['password'].dirty)">
+                <small class="text-danger" *ngIf="loginForm.controls['password'].errors?.['required']">
+                  Password is required.
+                </small>
+                <small class="text-danger" *ngIf="loginForm.controls['password'].errors?.['minlength']">
+                  Password must be at least 6 characters long.
+                </small>
+              </div>
+            </div>
+
+            <!-- Display login error if any -->
+            <div *ngIf="loginError" class="text-danger mb-3">
+              {{ loginError }}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Login</button>
+            </div>
+
+            <!-- Separator -->
+            <div class="separator mt-3">
+              <span>Login with</span>
+            </div>
+            <div class="row">
+              <!-- Social Login Buttons -->
+              <div class="col-4" *ngFor="let item of SignInOptions">
+                <div class="d-grid">
+                  <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
+                    <img src="{{ item.image }}" alt="{{ item.name }} img" />
+                    <span class="d-none d-sm-inline-block">{{ item.name }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Footer -->
+      <div class="auth-footer row">
+        <div class="col my-1">
+          <p class="m-0">Copyright ©
+            <a href="https://codedthemes.com/" target="_blank">CodedThemes</a>
+          </p>
+        </div>
+        <div class="col-auto my-1">
+          <ul class="list-inline footer-link mb-0">
+            <li class="list-inline-item"><a href="https://codedthemes.com/" target="_blank">Home</a></li>
+            <li class="list-inline-item"><a href="https://codedthemes.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="https://codedthemes.support-hub.io/" target="_blank">Contact us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
