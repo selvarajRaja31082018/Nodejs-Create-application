@@ -1,55 +1,66 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const { Op } = require('sequelize');
 
 // Register a new user
-// Register a new user
 exports.register = async (req, res) => {
-    const { username, password, email } = req.body;
-  
-    try {
-      // Check if user exists
-      const existingUser = await User.findOne({ where: { username } });
-      if (existingUser) {
-        return res.status(400).json({
-          status: 1,
-          message: 'User already exists',
-        });
-      }
-  
-      // Hash password before storing
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await User.create({ username, password: hashedPassword, email });
-  
-      // Generate JWT token
-      const token = jwt.sign(
-        { id: newUser.id, username: newUser.username },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
-      );
-  
-      res.status(200).json({
-        status: 0,
-        message: 'User registered successfully',
-        token,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
+  const { firstName, lastName, password, email, mobile } = req.body;
+
+  try {
+    // Check if user with the same email or mobilenumber exists
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email }, { mobile }],
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
         status: 1,
-        message: 'Server error',
+        message: 'Email or mobile number already in use',
       });
     }
-  };
+
+    // Hash password before storing
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      password: hashedPassword,
+      email,
+      mobile,
+    });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: newUser.id, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({
+      status: 0,
+      message: 'User registered successfully',
+      token,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: 1,
+      message: 'Server error',
+    });
+  }
+};
 
 // Login user and provide JWT
 
 exports.login = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
   
     try {
       // Check if user exists
-      const user = await User.findOne({ where: { username } });
+      const user = await User.findOne({ where: { email } });
       if (!user) {
         return res.status(400).json({
           status: 1,

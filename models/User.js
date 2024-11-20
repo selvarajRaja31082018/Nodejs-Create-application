@@ -7,10 +7,18 @@ const User = sequelize.define('User', {
     primaryKey: true,
     autoIncrement: true,
   },
-  username: {
+  firstName: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  mobile: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true, // Ensures no duplicate mobile numbers
   },
   password: {
     type: DataTypes.STRING,
@@ -22,7 +30,7 @@ const User = sequelize.define('User', {
     unique: true,
   },
 }, {
-  tableName: 'Users', // This matches the table name in the database
+  tableName: 'Users', // Matches the table name in the database
   timestamps: true, // To track createdAt and updatedAt columns
 });
 
